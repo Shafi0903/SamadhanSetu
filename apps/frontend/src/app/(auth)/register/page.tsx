@@ -21,8 +21,11 @@ import {
   UserGroupIcon,
 } from "@heroicons/react/24/outline";
 
+import { useAuthStore } from "@/store/authStore";
+
 export default function RegisterPage() {
   const router = useRouter();
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const [role, setRole] = React.useState<"CITIZEN" | "GOVERNMENT" | "UNIVERSITY" | "INDUSTRY">("GOVERNMENT");
   const [fullName, setFullName] = React.useState("");
@@ -31,9 +34,70 @@ export default function RegisterPage() {
   const [organizationName, setOrganizationName] = React.useState("");
   const [designation, setDesignation] = React.useState("");
 
+  // Citizen registration state
+  const [phone, setPhone] = React.useState("");
+  const [citizenName, setCitizenName] = React.useState("");
+  const [otpSent, setOtpSent] = React.useState(false);
+  const [otp, setOtp] = React.useState("");
+
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<string | null>(null);
+
+  const handleCitizenSendOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await apiRequest<{ success: boolean; message: string; demoOtp?: string }>(
+        "/api/auth/otp/send",
+        {
+          method: "POST",
+          body: JSON.stringify({ phone, fullName: citizenName }),
+        }
+      );
+      setOtpSent(true);
+      const demoCode = (res as any).demoOtp || res.data?.demoOtp || "123456";
+      setSuccess(`OTP sent to ${phone}! Demo code: ${demoCode}`);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to send OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCitizenRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await apiRequest<{
+        user: {
+          id: string;
+          phone: string;
+          fullName: string;
+          role: "CITIZEN";
+          isVerified: boolean;
+        };
+        token: string;
+      }>("/api/auth/otp/verify", {
+        method: "POST",
+        body: JSON.stringify({ phone, code: otp, fullName: citizenName }),
+      });
+
+      if (res.data) {
+        setAuth(res.data.user, res.data.token);
+        setSuccess("Citizen account created! Redirecting to Dashboard...");
+        setTimeout(() => {
+          router.push("/dashboard/citizen");
+        }, 800);
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Registration failed with OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -171,16 +235,60 @@ export default function RegisterPage() {
             )}
 
             {role === "CITIZEN" ? (
-              <div className="text-center py-6 space-y-4">
-                <p className="text-sm text-gray-600">
-                  Citizens log in seamlessly using their mobile number and a One-Time Password (OTP). No password registration required!
-                </p>
-                <Button
-                  onClick={() => router.push("/login")}
-                  className="w-full"
-                >
-                  Go to Citizen OTP Login
-                </Button>
+              <div className="space-y-4">
+                <div className="rounded-lg bg-blue-50 p-3 text-xs text-blue-700 border border-blue-200">
+                  <p className="font-semibold mb-0.5">Grassroots Citizen Registration</p>
+                  Citizens sign up and log in using their mobile number. No complex passwords needed!
+                </div>
+
+                {!otpSent ? (
+                  <form onSubmit={handleCitizenSendOtp} className="space-y-4">
+                    <Input
+                      label="Your Full Name"
+                      required
+                      placeholder="e.g. Ramesh Kumar"
+                      value={citizenName}
+                      onChange={(e) => setCitizenName(e.target.value)}
+                    />
+                    <Input
+                      label="Mobile Phone Number"
+                      type="tel"
+                      required
+                      placeholder="e.g. 9876543210"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                    <Button type="submit" disabled={loading} className="w-full">
+                      {loading ? "Sending OTP..." : "Send Verification OTP (Demo: 123456)"}
+                    </Button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleCitizenRegister} className="space-y-4">
+                    <div className="p-3 bg-gray-50 rounded-lg text-xs text-gray-600">
+                      Sending OTP to <span className="font-semibold text-gray-900">{phone}</span> for <span className="font-semibold text-gray-900">{citizenName}</span>.
+                    </div>
+                    <Input
+                      label="Enter 6-Digit OTP"
+                      type="text"
+                      required
+                      maxLength={6}
+                      placeholder="123456"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      className="text-center tracking-widest text-lg font-mono"
+                    />
+                    <Button type="submit" disabled={loading} className="w-full">
+                      {loading ? "Creating Account..." : "Verify & Complete Registration"}
+                    </Button>
+                    <button
+                      type="button"
+                      onClick={() => setOtpSent(false)}
+                      className="w-full text-xs text-gray-500 hover:text-indigo-600 text-center cursor-pointer"
+                    >
+                      Change Phone Number
+                    </button>
+                  </form>
+                )}
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
