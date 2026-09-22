@@ -60,10 +60,7 @@ export function createApp(): Express {
       res.status(500).json({
         success: false,
         error: "Internal Server Error",
-        message:
-          process.env.NODE_ENV === "production"
-            ? undefined
-            : err.message,
+        message: err.message || "An unexpected error occurred on the server.",
       });
     }
   );
