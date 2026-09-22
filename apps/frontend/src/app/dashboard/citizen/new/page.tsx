@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DashboardHeader } from "@/components/layout/DashboardHeader";
 import { Button, Input, Textarea, Select, Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui";
+import { CivicMap } from "@/components/common/CivicMap";
 import { apiRequest } from "@/lib/api";
 import {
   MapPinIcon,
@@ -197,10 +198,10 @@ export default function NewProblemPage() {
                     <div>
                       <h4 className="text-sm font-semibold text-indigo-900 flex items-center gap-1.5">
                         <MapPinIcon className="w-4 h-4 text-indigo-600" />
-                        GPS Coordinate Tagging
+                        Interactive Pin & GPS Coordinate Tagging
                       </h4>
                       <p className="text-xs text-indigo-700 mt-0.5">
-                        Lat: {latitude}, Lng: {longitude}
+                        Pinned Coordinates: Lat {latitude}, Lng {longitude}
                       </p>
                     </div>
                     <Button
@@ -213,6 +214,18 @@ export default function NewProblemPage() {
                       Detect My GPS
                     </Button>
                   </div>
+
+                  {/* Interactive Map Pinning */}
+                  <CivicMap
+                    height="280px"
+                    center={[latitude, longitude]}
+                    isPicker={true}
+                    pickedLocation={{ lat: latitude, lng: longitude }}
+                    onLocationPicked={(loc) => {
+                      setLatitude(loc.lat);
+                      setLongitude(loc.lng);
+                    }}
+                  />
 
                   <Input
                     label="Street Address / Landmark"

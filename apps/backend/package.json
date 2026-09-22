@@ -8,8 +8,12 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "test": "tsx --test src/__tests__/*.test.ts",
+    "db:seed": "tsx prisma/seed.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { Button, Input, Select, Card, Badge } from "@/components/ui";
+import { CivicMap } from "@/components/common/CivicMap";
 import { apiRequest } from "@/lib/api";
 import {
   MagnifyingGlassIcon,
@@ -18,6 +19,8 @@ interface Challenge {
   description: string;
   category: string;
   status: "VERIFIED" | "UNDER_INVESTIGATION" | "SOLUTION_PROPOSED" | "RESOLVED";
+  latitude: number;
+  longitude: number;
   city?: string;
   address?: string;
   mediaUrls: string[];
@@ -48,6 +51,7 @@ export default function ChallengeBoardPage() {
   const [loading, setLoading] = React.useState(true);
   const [search, setSearch] = React.useState("");
   const [category, setCategory] = React.useState("");
+  const [viewMode, setViewMode] = React.useState<"grid" | "map">("grid");
 
   const fetchChallenges = React.useCallback(async () => {
     setLoading(true);
@@ -115,7 +119,7 @@ export default function ChallengeBoardPage() {
           </p>
 
           {/* Search & Filter Bar */}
-          <div className="pt-4 flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
+          <div className="pt-4 flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto">
             <div className="relative flex-1">
               <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
               <input
@@ -133,11 +137,32 @@ export default function ChallengeBoardPage() {
                 onChange={(e) => setCategory(e.target.value)}
               />
             </div>
+            {/* View Mode Toggle */}
+            <div className="flex rounded-lg border border-gray-300 p-0.5 bg-gray-50 shrink-0">
+              <button
+                type="button"
+                onClick={() => setViewMode("grid")}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition cursor-pointer ${
+                  viewMode === "grid" ? "bg-white text-indigo-600 shadow-2xs" : "text-gray-600"
+                }`}
+              >
+                Grid
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("map")}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition cursor-pointer flex items-center gap-1 ${
+                  viewMode === "map" ? "bg-white text-indigo-600 shadow-2xs" : "text-gray-600"
+                }`}
+              >
+                <span>📍 Map</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main Grid */}
+      {/* Main Grid or Map */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
           <div className="py-20 text-center text-sm text-gray-500">
@@ -153,6 +178,26 @@ export default function ChallengeBoardPage() {
               Try adjusting your search query or category filter. As nodal authorities verify new citizen submissions, they will be listed here immediately.
             </p>
           </Card>
+        ) : viewMode === "map" ? (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between text-xs text-gray-500">
+              <span>Showing <strong>{challenges.length}</strong> verified challenges on city map</span>
+              <span>Click on any pin to view details</span>
+            </div>
+            <CivicMap
+              height="550px"
+              problems={challenges.map((c) => ({
+                id: c.id,
+                title: c.title,
+                category: c.category,
+                status: c.status,
+                latitude: c.latitude,
+                longitude: c.longitude,
+                city: c.city,
+                address: c.address,
+              }))}
+            />
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {challenges.map((challenge) => (

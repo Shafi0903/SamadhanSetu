@@ -6,14 +6,16 @@
 
 ## 1. Current Project State & Active Context
 
-* **Current Phase:** MVP Completed (Phases 1 through 6 Complete)
-* **Active Task:** Platform fully scaffolded, built, tested, and validated. All frontend pages and backend microservices operating with zero errors.
-* **Immediate Next Step:** Production deployment / hosting on cloud infrastructure (e.g., Vercel + Render/Railway + Managed PostgreSQL).
+* **Current Phase:** Pilot Onboarding & Feature Extensions Complete
+* **Active Task:** Seed script (`apps/backend/prisma/seed.ts`), Leaflet interactive `CivicMap` with custom category pins, and click-to-pin location selection implemented and verified.
+* **Immediate Next Step:** Production deployment / container orchestration (Docker Compose) or cloud database deployment.
 
 ## 2. Important Decisions (Architecture & Design)
 
 *Log all major technical, structural, or design decisions here along with the rationale.*
 
+* **[2026-09-22] Leaflet OpenStreetMap CivicMap:** Integrated lightweight, zero-API-key Leaflet mapping component (`apps/frontend/src/components/common/CivicMap.tsx`) featuring category-coded marker pins, interactive challenge inspection popups, and click-to-pin coordinates detection for citizen problem intake.
+* **[2026-09-22] Comprehensive Pilot Database Seed Script:** Built realistic seeding pipeline (`apps/backend/prisma/seed.ts`) creating test citizen accounts, PMC municipal authorities, COEP and IIT Bombay research faculties, Tata Trusts and Infosys Foundation CSR partners, geotagged civic challenges, solution prototypes, and timeline histories.
 * **[2026-09-22] Dual-Language i18n Architecture:** Integrated bilingual support (English + Hindi / हिंदी) using Zustand (`apps/frontend/src/store/languageStore.ts`) and Google `Noto Sans` for complex devanagari script rendering, ensuring accessibility for non-English-speaking grassroots citizens.
 * **[2026-09-22] Global Analytics & Impact Engine:** Implemented transparent metrics aggregation (`apps/backend/src/services/analytics.service.ts` & `/analytics`), tracking problems reported/resolved, participating academic institutions, and corporate CSR funds committed.
 * **[2026-09-22] In-App Stakeholder Notification System:** Created `Notification` database model and service with dropdown drawer in `DashboardHeader` to notify citizens of triage updates and university teams of CSR pledges.
