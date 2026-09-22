@@ -6,14 +6,16 @@
 
 ## 1. Current Project State & Active Context
 
-* **Current Phase:** Phase 1 (Project Setup & Architecture)
-* **Active Task:** Completed Task 1.2 (Database Setup & Prisma Schema Design). Ready for Task 1.3 (Base UI Component Library Expansion: Modal, Form Fields, Tabs) and Task 1.4 (CI/CD Pipeline).
-* **Immediate Next Step:** Complete remaining base UI components (Modal, Dropdown, Tabs) in `apps/frontend/src/components/ui/` for Task 1.3, then proceed to Phase 2 (Authentication & RBAC).
+* **Current Phase:** Phase 2 (Authentication & User Management)
+* **Active Task:** Starting Task 2.1 (Auth Service Setup) and Task 2.2 / 2.3 (Citizen Mobile/OTP and Institutional Email/Password Auth with RBAC).
+* **Immediate Next Step:** Implement authentication controllers, JWT signing, password hashing (bcrypt), and role validation middleware in `apps/backend`.
 
 ## 2. Important Decisions (Architecture & Design)
 
 *Log all major technical, structural, or design decisions here along with the rationale.*
 
+* **[2026-09-22] Design System UI Library:** Created a core component library in `apps/frontend/src/components/ui/` (`Button`, `Card`, `Badge`, `Input`, `Modal`, `Textarea`, `Select`, `Tabs`) adhering strictly to the color palettes, 8-pt grid, and accessibility standards from `design.md`.
+* **[2026-09-22] CI/CD Pipeline:** Configured GitHub Actions workflow (`.github/workflows/ci.yml`) performing automated checkout, dependency caching, Prisma generation, backend type checking, and frontend Next.js production builds.
 * **[2026-09-22] Prisma Database Schema:** Defined comprehensive Prisma schema (`apps/backend/prisma/schema.prisma`) modeling `User` (multi-persona with role-based attributes and verification flags), `Problem` (GPS geolocation coordinates, categories, status lifecycle, verification/claiming relations), `SolutionProposal` (student team prototype tracking), `SupportPledge` (industry CSR, mentorship, micro-grants), `Comment` (cross-entity discussion thread), `ProblemUpvote` (citizen validation), and `TimelineEvent` (audit log powering the transparent "Setu" lifecycle tracker).
 * **[2026-09-22] Monorepo Structure:** Adopted NPM workspaces monorepo structure containing `apps/frontend` (Next.js 16, React 19, Tailwind CSS), `apps/backend` (Node.js/Express, TypeScript), and `packages/types` (shared domain models & TypeScript definitions).
 * **[2026-09-22] Design System Tokens:** Applied the design tokens defined in `design.md` directly into `apps/frontend/tailwind.config.ts` and `apps/frontend/src/app/globals.css`, including semantic status colors (submitted: blue-500, pending: amber-500, urgent: red-500, resolved: emerald-500) and brand colors (primary: indigo-600, secondary: emerald-500).
@@ -31,8 +33,12 @@
 
 *Briefly summarize completed tasks so the AI knows what already exists.*
 
-* **[2026-09-22] Task 1.2 Complete:** Designed and compiled complete Prisma schema in `apps/backend/prisma/schema.prisma`. Generated Prisma client v6.19.3. Created shared database singleton in `apps/backend/src/lib/prisma.ts`.
-* **[2026-09-22] Task 1.1 Complete:** Initialized Git repository, configured root NPM workspaces monorepo, scaffolded `apps/frontend` (Next.js App Router, Tailwind CSS, TypeScript), `apps/backend` (Express TypeScript), and `packages/types` (shared types). Created foundational UI components (`Button`, `Card`, `Badge`, `Input`) adhering to `design.md`. Both frontend and backend builds verified with exit code 0.
+* **[2026-09-22] Phase 1 Fully Complete:**
+  - Task 1.1: Monorepo established (Next.js 16 App Router, Express, `@samadhansetu/types`).
+  - Task 1.2: PostgreSQL Prisma schema designed and compiled; client singleton created.
+  - Task 1.3: Design tokens applied; 8 accessible UI components created (`Button`, `Card`, `Badge`, `Input`, `Modal`, `Textarea`, `Select`, `Tabs`).
+  - Task 1.4: GitHub Actions CI/CD workflow created and validated.
+* **[YYYY-MM-DD] Documentation:** Created initial PRD (`PRD.md`), AI Rules (`rules.md`), Design System (`design.md`), Task Breakdown (`tasks.md`), and Architecture blueprint (`architecture.md`).
 * **[YYYY-MM-DD] Documentation:** Created initial PRD (`PRD.md`), AI Rules (`rules.md`), Design System (`design.md`), Task Breakdown (`tasks.md`), and Architecture blueprint (`architecture.md`).
 
 ## 5. Development Directives & AI Reminders

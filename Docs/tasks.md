@@ -11,10 +11,10 @@ This document divides the SamadhanSetu platform development into manageable phas
 * [x] **Task 1.2: Database Setup & Schema Design**
   * Set up PostgreSQL database configuration & Prisma client.
   * Define Prisma schemas for `User`, `Role`, `Problem`, `Solution`, `Comment`, `SupportPledge`, and `TimelineEvent`.
-* [ ] **Task 1.3: Design System Implementation**
+* [x] **Task 1.3: Design System Implementation**
   * Configure Tailwind CSS with colors, fonts, and spacing defined in `design.md`.
-  * Create base UI components (Button, Input, Card, Badge, Modal).
-* [ ] **Task 1.4: CI/CD Pipeline**
+  * Create base UI components (Button, Input, Card, Badge, Modal, Textarea, Select, Tabs).
+* [x] **Task 1.4: CI/CD Pipeline**
   * Set up GitHub Actions for automated linting, type checking, and testing.
 
 ## Phase 2: Authentication & User Management (Week 2)
