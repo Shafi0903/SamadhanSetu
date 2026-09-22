@@ -1,14 +1,15 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/auth.controller";
 import { authenticate, authorize } from "../middlewares/auth";
+import { authRateLimiter } from "../middlewares/rateLimiter";
 
 const router = Router();
 
-// Public routes
-router.post("/otp/send", AuthController.sendOtp);
-router.post("/otp/verify", AuthController.verifyOtp);
-router.post("/register", AuthController.registerInstitution);
-router.post("/login", AuthController.login);
+// Public routes (Rate-limited against brute-force & credential stuffing)
+router.post("/otp/send", authRateLimiter, AuthController.sendOtp);
+router.post("/otp/verify", authRateLimiter, AuthController.verifyOtp);
+router.post("/register", authRateLimiter, AuthController.registerInstitution);
+router.post("/login", authRateLimiter, AuthController.login);
 
 // Protected routes
 router.get("/me", authenticate, AuthController.getMe);
