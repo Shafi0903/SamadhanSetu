@@ -6,9 +6,9 @@
 
 ## 1. Current Project State & Active Context
 
-* **Current Phase:** Pilot Onboarding & Feature Extensions Complete
-* **Active Task:** Seed script (`apps/backend/prisma/seed.ts`), Leaflet interactive `CivicMap` with custom category pins, and click-to-pin location selection implemented and verified.
-* **Immediate Next Step:** Production deployment / container orchestration (Docker Compose) or cloud database deployment.
+* **Current Phase:** Roles Verification, Containerization & Production Deployment Ready
+* **Active Task:** Full Docker Compose orchestration, container multi-stage Dockerfiles (`apps/backend/Dockerfile`, `apps/frontend/Dockerfile`), `.dockerignore`, `.env.example`, and 4-role verification runbook implemented.
+* **Immediate Next Step:** Production hosting deployment (Vercel + Railway/Render + Managed PostgreSQL) or custom domain setup.
 
 ## 2. Important Decisions (Architecture & Design)
 
@@ -40,6 +40,12 @@
 
 *Briefly summarize completed tasks so the AI knows what already exists.*
 
+* **[2026-09-22] Roles Verification, Docker Setup & Deployment Complete:**
+  - Multi-stage Docker builds configured for Express backend (`apps/backend/Dockerfile`) with automated Prisma db push and seed execution.
+  - Multi-stage Next.js Docker configuration (`apps/frontend/Dockerfile`).
+  - Production-ready `docker-compose.yml` defining PostgreSQL 16 with healthchecks, persistent volumes, backend, and frontend containers.
+  - Root `.dockerignore` and `.env.example` templates created and verified with `docker compose config`.
+  - Comprehensive walkthrough documentation for all 4 stakeholder roles (Citizen, Government, University, Industry) and cloud deployment instructions.
 * **[2026-09-22] Phases 5 & 6 Complete (Full MVP Milestone):**
   - Built Notification Service and interactive in-app notification dropdown drawer in `DashboardHeader`.
   - Built Global Analytics Dashboard (`/analytics`) with live impact counters and real-time Setu activity stream.
