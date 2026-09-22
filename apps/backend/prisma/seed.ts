@@ -339,7 +339,7 @@ async function main() {
       state: "West Bengal",
       pincode: "700046",
       mediaUrls: [
-        "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&auto=format&fit=crop",
+        "/images/streetlights-maa-flyover.png",
       ],
       reporterId: citizen2.id,
       timelineEvents: {

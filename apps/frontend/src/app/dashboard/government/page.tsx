@@ -34,6 +34,7 @@ interface TriageProblem {
   status: "PENDING_VERIFICATION" | "VERIFIED" | "UNDER_INVESTIGATION" | "SOLUTION_PROPOSED" | "RESOLVED" | "REJECTED";
   city?: string;
   address?: string;
+  mediaUrls?: string[];
   createdAt: string;
   reporter?: {
     id: string;
@@ -251,36 +252,48 @@ export default function GovernmentDashboardPage() {
               <div className="grid grid-cols-1 gap-4">
                 {triageProblems.map((problem) => (
                   <Card key={problem.id} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="space-y-1.5 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Badge
-                          variant={
-                            problem.status === "PENDING_VERIFICATION"
-                              ? "pending"
-                              : problem.status === "VERIFIED"
-                              ? "resolved"
-                              : "urgent"
-                          }
-                        >
-                          {problem.status.replace("_", " ")}
-                        </Badge>
-                        <span className="text-xs font-medium px-2 py-0.5 rounded-md bg-gray-100 text-gray-700">
-                          {problem.category}
-                        </span>
-                        {problem.city && (
-                          <span className="text-xs text-gray-500 flex items-center gap-1">
-                            <MapPinIcon className="w-3.5 h-3.5" />
-                            {problem.address || problem.city}
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1">
+                      {problem.mediaUrls && problem.mediaUrls.length > 0 && (
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border border-gray-200 bg-gray-100 shrink-0 shadow-xs">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={problem.mediaUrls[0]}
+                            alt={problem.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="space-y-1.5 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Badge
+                            variant={
+                              problem.status === "PENDING_VERIFICATION"
+                                ? "pending"
+                                : problem.status === "VERIFIED"
+                                ? "resolved"
+                                : "urgent"
+                            }
+                          >
+                            {problem.status.replace("_", " ")}
+                          </Badge>
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-md bg-gray-100 text-gray-700">
+                            {problem.category}
                           </span>
-                        )}
-                      </div>
+                          {problem.city && (
+                            <span className="text-xs text-gray-500 flex items-center gap-1">
+                              <MapPinIcon className="w-3.5 h-3.5" />
+                              {problem.address || problem.city}
+                            </span>
+                          )}
+                        </div>
 
-                      <h3 className="text-base font-semibold text-gray-900">{problem.title}</h3>
-                      <p className="text-sm text-gray-600 line-clamp-2">{problem.description}</p>
+                        <h3 className="text-base font-semibold text-gray-900">{problem.title}</h3>
+                        <p className="text-sm text-gray-600 line-clamp-2">{problem.description}</p>
 
-                      <div className="text-xs text-gray-400 pt-1">
-                        Reported by: <span className="font-medium text-gray-700">{problem.reporter?.fullName || "Citizen"}</span> (
-                        {problem.reporter?.phone || "Mobile verified"})
+                        <div className="text-xs text-gray-400 pt-1">
+                          Reported by: <span className="font-medium text-gray-700">{problem.reporter?.fullName || "Citizen"}</span> (
+                          {problem.reporter?.phone || "Mobile verified"})
+                        </div>
                       </div>
                     </div>
 
