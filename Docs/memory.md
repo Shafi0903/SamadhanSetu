@@ -6,14 +6,15 @@
 
 ## 1. Current Project State & Active Context
 
-* **Current Phase:** Phase 3 (Core Problem Lifecycle)
-* **Active Task:** Starting Task 3.1 (Problem Submission Form) and Task 3.2 (Citizen Dashboard issue tracking).
-* **Immediate Next Step:** Implement Problem ingestion API (`POST /api/problems`), image upload handling, geolocation support, and the citizen multi-step submission form.
+* **Current Phase:** Phase 4 (Matchmaking & Collaboration)
+* **Active Task:** Starting Task 4.1 (Public Challenge Board claiming integration), Task 4.2 (University Project Claiming & Solution Proposal submission), and Task 4.3 (Industry Support Pledging).
+* **Immediate Next Step:** Implement Solution Proposal submission endpoints (`POST /api/solutions`), problem claiming endpoints (`PATCH /api/problems/:id/claim`), and Industry CSR pledging (`POST /api/pledges`).
 
 ## 2. Important Decisions (Architecture & Design)
 
 *Log all major technical, structural, or design decisions here along with the rationale.*
 
+* **[2026-09-22] 5-Stage Setu Transparent Lifecycle Tracker:** Attached `TimelineEvent` records to every state transition (*Reported -> Verified -> Claimed -> Supported -> Resolved*). Implemented dynamic status calculations and visual indicator bar on the public challenge page (`/challenge/[id]`).
 * **[2026-09-22] Dual Authentication & RBAC:** Implemented JWT-based authentication supporting passwordless mobile OTP for `CITIZEN` users, and encrypted (bcrypt) credential registration for institutional personas (`GOVERNMENT`, `UNIVERSITY`, `INDUSTRY`). Added institutional vetting workflow where newly registered institutions default to `isVerified: false` until approved by a nodal government authority.
 * **[2026-09-22] Client Auth Store:** Created Zustand auth store (`apps/frontend/src/store/authStore.ts`) with client persistence and automatic authorization header injection via `apiRequest` helper.
 * **[2026-09-22] Design System UI Library:** Created a core component library in `apps/frontend/src/components/ui/` (`Button`, `Card`, `Badge`, `Input`, `Modal`, `Textarea`, `Select`, `Tabs`) adhering strictly to the color palettes, 8-pt grid, and accessibility standards from `design.md`.
@@ -34,13 +35,15 @@
 
 *Briefly summarize completed tasks so the AI knows what already exists.*
 
-* **[2026-09-22] Phase 2 Complete:**
-  - Implemented JWT utility (`apps/backend/src/utils/jwt.ts`).
-  - Implemented RBAC middleware (`authenticate`, `authorize`, `requireVerified`).
-  - Built `AuthService` and `AuthController` with Zod validation schemas for OTP dispatch/verification, institutional email/password registration, login, and institutional account approval.
-  - Built frontend `/login` (dual-mode Citizen OTP & Institutional login tabs) and `/register` (persona-aware registration form).
-  - Built role-based dashboard landing pages (`/dashboard/citizen`, `/dashboard/government`, `/dashboard/university`, `/dashboard/industry`) with shared `DashboardHeader`.
-* **[2026-09-22] Phase 1 Fully Complete:** Monorepo scaffolding, database schemas, full design system tokens and components, and GitHub Actions CI.
+* **[2026-09-22] Phase 3 Complete:**
+  - Built `ProblemService` and `ProblemController` managing problem creation, triage queries, and verification / rejection lifecycles.
+  - Built multi-step Citizen Problem Submission form with GPS coordinate detection (`/dashboard/citizen/new`).
+  - Updated Citizen Dashboard with live metrics and ticket cards (`/dashboard/citizen`).
+  - Built Government Triage Console with filtering and official rejection dialog (`/dashboard/government`).
+  - Built Public Challenge Board with search and categories (`/challenge`).
+  - Built Setu Problem Detail page with visual 5-stage lifecycle tracker and upvoting (`/challenge/[id]`).
+* **[2026-09-22] Phase 2 Complete:** JWT authentication, RBAC middleware, Citizen OTP, and institutional login/registration.
+* **[2026-09-22] Phase 1 Fully Complete:** Monorepo setup, Prisma schemas, design system UI components, and GitHub Actions CI.
 * **[YYYY-MM-DD] Documentation:** Created initial PRD (`PRD.md`), AI Rules (`rules.md`), Design System (`design.md`), Task Breakdown (`tasks.md`), and Architecture blueprint (`architecture.md`).
 * **[YYYY-MM-DD] Documentation:** Created initial PRD (`PRD.md`), AI Rules (`rules.md`), Design System (`design.md`), Task Breakdown (`tasks.md`), and Architecture blueprint (`architecture.md`).
 

@@ -34,16 +34,17 @@ This document divides the SamadhanSetu platform development into manageable phas
 ## Phase 3: Core Problem Lifecycle (Week 3)
 **Goal:** Allow citizens to submit problems and government officials to verify them.
 
-* [ ] **Task 3.1: Problem Submission Form (Citizen)**
-  * Build the multi-step form (Title, Category, Description, Geo-location/Map Pin, Image Upload).
-  * Implement form validation.
-* [ ] **Task 3.2: Citizen Dashboard**
+* [x] **Task 3.1: Problem Submission Form (Citizen)**
+  * Build the multi-step form (Title, Category, Description, Geo-location/GPS Detection, Media Upload).
+  * Implement Zod payload validation on backend.
+* [x] **Task 3.2: Citizen Dashboard**
   * Create a UI for citizens to track their submitted tickets and view statuses.
-* [ ] **Task 3.3: Government Triage Dashboard**
+* [x] **Task 3.3: Government Triage Dashboard**
   * Build a queue system for nodal officers to view incoming submissions.
   * Implement filtering (by location, date, category).
-* [ ] **Task 3.4: Verification Flow**
-  * Add functionality for government admins to "Approve/Verify", "Reject", or "Merge Duplicate" problems.
+* [x] **Task 3.4: Verification Flow**
+  * Add functionality for government admins to "Approve/Verify" or "Reject" problems with reasons.
+  * Create public Challenge Board and 5-stage Setu problem lifecycle audit tracker.
 
 ## Phase 4: Matchmaking & Collaboration (Week 4)
 **Goal:** Enable universities to claim verified problems and industry to offer support.
