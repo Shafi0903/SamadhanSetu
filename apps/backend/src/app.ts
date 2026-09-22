@@ -2,6 +2,7 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth.routes";
 import problemRoutes from "./routes/problem.routes";
+import solutionRoutes from "./routes/solution.routes";
 
 export function createApp(): Express {
   const app = express();
@@ -17,6 +18,7 @@ export function createApp(): Express {
   // API Routes
   app.use("/api/auth", authRoutes);
   app.use("/api/problems", problemRoutes);
+  app.use("/api/solutions", solutionRoutes);
 
   // Centralized Error Handling Middleware (Rules.md requirement)
   app.use(

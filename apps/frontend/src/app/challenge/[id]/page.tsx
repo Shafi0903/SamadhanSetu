@@ -2,8 +2,19 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { Button, Card, CardHeader, CardTitle, CardContent, Badge } from "@/components/ui";
+import { useParams, useRouter } from "next/navigation";
+import {
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  Badge,
+  Modal,
+  Input,
+  Textarea,
+  Select,
+} from "@/components/ui";
 import { apiRequest } from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
 import {
@@ -14,7 +25,9 @@ import {
   AcademicCapIcon,
   BriefcaseIcon,
   ClockIcon,
+  SparklesIcon,
   CheckCircleIcon,
+  CodeBracketIcon,
 } from "@heroicons/react/24/outline";
 
 interface ProblemDetails {
@@ -63,15 +76,25 @@ interface ProblemDetails {
   solutions: Array<{
     id: string;
     title: string;
+    description: string;
     stage: string;
+    repoUrl?: string;
+    documentUrls: string[];
     teamLead: {
+      id?: string;
       fullName: string;
       organizationName?: string;
     };
     pledges: Array<{
       id: string;
       pledgeType: string;
+      description: string;
+      amount?: number;
       status: string;
+      sponsor?: {
+        fullName: string;
+        organizationName?: string;
+      };
     }>;
   }>;
   _count: {
@@ -81,6 +104,7 @@ interface ProblemDetails {
 }
 
 export default function ProblemDetailPage() {
+  const router = useRouter();
   const params = useParams();
   const id = Array.isArray(params?.id) ? params.id[0] : params?.id;
 
@@ -89,24 +113,42 @@ export default function ProblemDetailPage() {
   const [loading, setLoading] = React.useState(true);
   const [upvotes, setUpvotes] = React.useState(0);
   const [upvoted, setUpvoted] = React.useState(false);
+  const [actionMsg, setActionMsg] = React.useState<string | null>(null);
+
+  // Claim state
+  const [claiming, setClaiming] = React.useState(false);
+
+  // Pledge modal state
+  const [pledgeModalOpen, setPledgeModalOpen] = React.useState(false);
+  const [selectedSolutionId, setSelectedSolutionId] = React.useState<string | null>(null);
+  const [pledgeType, setPledgeType] = React.useState("CSR_FUNDING");
+  const [pledgeAmount, setPledgeAmount] = React.useState("50000");
+  const [pledgeDesc, setPledgeDesc] = React.useState("");
+  const [pledging, setPledging] = React.useState(false);
+
+  // Resolve modal state
+  const [resolveModalOpen, setResolveModalOpen] = React.useState(false);
+  const [resolveNotes, setResolveNotes] = React.useState("");
+  const [resolving, setResolving] = React.useState(false);
+
+  const loadProblem = React.useCallback(async () => {
+    if (!id) return;
+    try {
+      const res = await apiRequest<ProblemDetails>(`/api/problems/${id}`);
+      if (res.data) {
+        setProblem(res.data);
+        setUpvotes(res.data._count?.upvotes || 0);
+      }
+    } catch (err) {
+      console.error("Failed to load problem:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
 
   React.useEffect(() => {
-    if (!id) return;
-    async function loadProblem() {
-      try {
-        const res = await apiRequest<ProblemDetails>(`/api/problems/${id}`);
-        if (res.data) {
-          setProblem(res.data);
-          setUpvotes(res.data._count?.upvotes || 0);
-        }
-      } catch (err) {
-        console.error("Failed to load problem:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
     loadProblem();
-  }, [id]);
+  }, [loadProblem]);
 
   const handleUpvote = async () => {
     if (!id) return;
@@ -120,6 +162,71 @@ export default function ProblemDetailPage() {
       }
     } catch {
       alert("Please sign in as a citizen to upvote this civic issue.");
+    }
+  };
+
+  const handleClaim = async () => {
+    if (!id) return;
+    setClaiming(true);
+    try {
+      await apiRequest(`/api/solutions/claim/${id}`, { method: "PATCH" });
+      setActionMsg("Challenge claimed successfully for your university team!");
+      loadProblem();
+      setTimeout(() => setActionMsg(null), 4000);
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Failed to claim challenge");
+    } finally {
+      setClaiming(false);
+    }
+  };
+
+  const openPledgeModal = (solutionId: string) => {
+    setSelectedSolutionId(solutionId);
+    setPledgeModalOpen(true);
+  };
+
+  const handlePledgeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedSolutionId) return;
+    setPledging(true);
+    try {
+      await apiRequest("/api/solutions/pledge", {
+        method: "POST",
+        body: JSON.stringify({
+          solutionId: selectedSolutionId,
+          pledgeType,
+          amount: pledgeType === "CSR_FUNDING" ? Number(pledgeAmount) : undefined,
+          description: pledgeDesc,
+        }),
+      });
+      setPledgeModalOpen(false);
+      setActionMsg("Support pledge confirmed! Thank you for backing student innovators.");
+      loadProblem();
+      setTimeout(() => setActionMsg(null), 4000);
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Pledge failed");
+    } finally {
+      setPledging(false);
+    }
+  };
+
+  const handleResolveSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id) return;
+    setResolving(true);
+    try {
+      await apiRequest(`/api/solutions/resolve/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ notes: resolveNotes }),
+      });
+      setResolveModalOpen(false);
+      setActionMsg("Challenge officially marked as RESOLVED and deployed!");
+      loadProblem();
+      setTimeout(() => setActionMsg(null), 4000);
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Resolution failed");
+    } finally {
+      setResolving(false);
     }
   };
 
@@ -170,12 +277,45 @@ export default function ProblemDetailPage() {
               <HandThumbUpIcon className="w-4 h-4" />
               <span>{upvotes} Upvotes</span>
             </Button>
+
+            {/* University Claim Button */}
+            {user?.role === "UNIVERSITY" && problem.status === "VERIFIED" && !problem.claimedBy && (
+              <Button
+                size="sm"
+                onClick={handleClaim}
+                isLoading={claiming}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-1"
+              >
+                <AcademicCapIcon className="w-4 h-4" />
+                Claim for University
+              </Button>
+            )}
+
+            {/* Resolve Button */}
+            {(user?.role === "GOVERNMENT" || user?.id === problem.claimedBy?.id) &&
+              problem.status !== "RESOLVED" &&
+              isClaimed && (
+                <Button
+                  size="sm"
+                  onClick={() => setResolveModalOpen(true)}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1"
+                >
+                  <CheckCircleIcon className="w-4 h-4" />
+                  Mark Resolved
+                </Button>
+              )}
           </div>
         </div>
       </header>
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {actionMsg && (
+          <div className="p-4 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-sm font-medium shadow-xs">
+            {actionMsg}
+          </div>
+        )}
+
         {/* Title & Metadata Header */}
         <div className="bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-xs space-y-4">
           <div className="flex flex-wrap items-center gap-2">
@@ -272,7 +412,7 @@ export default function ProblemDetailPage() {
               </span>
               <h4 className={`text-sm font-semibold ${isResolved ? "text-white" : "text-gray-900"}`}>5. Resolved</h4>
               <p className={`text-xs mt-1 ${isResolved ? "text-emerald-100" : "text-gray-600"}`}>
-                {isResolved ? "Prototype implemented in field." : "In development."}
+                {isResolved ? "Prototype deployed in community." : "In development."}
               </p>
             </div>
           </div>
@@ -288,6 +428,88 @@ export default function ProblemDetailPage() {
                 {problem.description}
               </p>
             </Card>
+
+            {/* University Solutions Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <AcademicCapIcon className="w-5 h-5 text-indigo-600" />
+                  Proposed Solutions & Prototypes ({problem.solutions?.length || 0})
+                </h3>
+                {user?.role === "UNIVERSITY" && isClaimed && (
+                  <Link href="/dashboard/university">
+                    <Button size="sm" variant="secondary">
+                      Manage in Hub
+                    </Button>
+                  </Link>
+                )}
+              </div>
+
+              {problem.solutions?.length === 0 ? (
+                <Card className="p-6 text-center text-sm text-gray-500">
+                  No prototype proposals uploaded for this challenge yet.
+                </Card>
+              ) : (
+                problem.solutions.map((sol) => (
+                  <Card key={sol.id} className="p-6 space-y-4 border border-indigo-100">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700">
+                          Stage: {sol.stage}
+                        </span>
+                        <h4 className="text-base font-bold text-gray-900 mt-1">{sol.title}</h4>
+                        <p className="text-xs text-gray-500">
+                          Led by {sol.teamLead.fullName} ({sol.teamLead.organizationName || "Research Team"})
+                        </p>
+                      </div>
+
+                      {user?.role === "INDUSTRY" && (
+                        <Button
+                          size="sm"
+                          onClick={() => openPledgeModal(sol.id)}
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-xs"
+                        >
+                          <SparklesIcon className="w-4 h-4" />
+                          Pledge CSR / Mentorship
+                        </Button>
+                      )}
+                    </div>
+
+                    <p className="text-sm text-gray-700 leading-relaxed">{sol.description}</p>
+
+                    {sol.repoUrl && (
+                      <div className="text-xs flex items-center gap-1.5 text-indigo-600">
+                        <CodeBracketIcon className="w-4 h-4" />
+                        <a href={sol.repoUrl} target="_blank" rel="noreferrer" className="hover:underline">
+                          View Code Repository
+                        </a>
+                      </div>
+                    )}
+
+                    {/* Pledges Attached to Solution */}
+                    {sol.pledges?.length > 0 && (
+                      <div className="pt-3 border-t border-gray-100 space-y-2">
+                        <h5 className="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1">
+                          <BriefcaseIcon className="w-3.5 h-3.5 text-emerald-600" />
+                          Industry Backing ({sol.pledges.length})
+                        </h5>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {sol.pledges.map((p) => (
+                            <div key={p.id} className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 text-xs">
+                              <span className="font-semibold text-emerald-900">
+                                {p.pledgeType.replace("_", " ")}
+                                {p.amount ? ` (₹${p.amount.toLocaleString()})` : ""}
+                              </span>
+                              <p className="text-emerald-700 mt-0.5 line-clamp-1">{p.description}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </Card>
+                ))
+              )}
+            </div>
 
             {/* Media Evidence Gallery */}
             {problem.mediaUrls?.length > 0 && (
@@ -328,7 +550,7 @@ export default function ProblemDetailPage() {
             </Card>
           </div>
 
-          {/* Sidebar: Stakeholder Involvement */}
+          {/* Sidebar */}
           <div className="space-y-6">
             {/* Government Verifier Card */}
             <Card className="p-5">
@@ -365,17 +587,102 @@ export default function ProblemDetailPage() {
                   <p className="text-xs text-gray-500">
                     This verified problem is available for faculty and student engineering/research teams to claim.
                   </p>
-                  <Link href="/login">
-                    <Button size="sm" className="w-full">
-                      Claim Problem (University)
+                  {user?.role === "UNIVERSITY" ? (
+                    <Button size="sm" className="w-full" onClick={handleClaim} isLoading={claiming}>
+                      Claim Problem Now
                     </Button>
-                  </Link>
+                  ) : (
+                    <Link href="/login">
+                      <Button size="sm" variant="secondary" className="w-full">
+                        Sign In as University
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               )}
             </Card>
           </div>
         </div>
       </main>
+
+      {/* Industry Support Pledge Modal */}
+      <Modal
+        isOpen={pledgeModalOpen}
+        onClose={() => setPledgeModalOpen(false)}
+        title="Pledge Industry & CSR Support"
+        description="Offer corporate sponsorship, testing equipment, or domain mentorship to this student prototype team."
+      >
+        <form onSubmit={handlePledgeSubmit} className="space-y-4 pt-2">
+          <Select
+            label="Support Contribution Type"
+            options={[
+              { value: "CSR_FUNDING", label: "CSR Micro-Grant / Seed Funding" },
+              { value: "MENTORSHIP", label: "Technical Mentorship & Advisory" },
+              { value: "EQUIPMENT", label: "Laboratory / Testing Hardware & Equipment" },
+              { value: "INCUBATION", label: "Incubation & Acceleration Pipeline" },
+            ]}
+            value={pledgeType}
+            onChange={(e) => setPledgeType(e.target.value)}
+          />
+
+          {pledgeType === "CSR_FUNDING" && (
+            <Input
+              label="Funding Commitment (in INR ₹)"
+              type="number"
+              required
+              min={1000}
+              step={1000}
+              value={pledgeAmount}
+              onChange={(e) => setPledgeAmount(e.target.value)}
+            />
+          )}
+
+          <Textarea
+            label="Pledge Details & Mentorship Scope"
+            required
+            rows={3}
+            placeholder="Describe the resources, hardware, or expert time your corporate team can provide..."
+            value={pledgeDesc}
+            onChange={(e) => setPledgeDesc(e.target.value)}
+          />
+
+          <div className="flex justify-end gap-2 pt-2">
+            <Button type="button" variant="secondary" onClick={() => setPledgeModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" isLoading={pledging} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              Confirm Support Pledge
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Mark Resolved Modal */}
+      <Modal
+        isOpen={resolveModalOpen}
+        onClose={() => setResolveModalOpen(false)}
+        title="Mark Challenge as Resolved"
+        description="Verify that the student solution has been tested, deployed on-ground, and the civic issue is resolved."
+      >
+        <form onSubmit={handleResolveSubmit} className="space-y-4 pt-2">
+          <Textarea
+            label="Field Deployment Notes"
+            rows={3}
+            placeholder="Describe the deployment results, community feedback, or maintenance handover..."
+            value={resolveNotes}
+            onChange={(e) => setResolveNotes(e.target.value)}
+          />
+
+          <div className="flex justify-end gap-2 pt-2">
+            <Button type="button" variant="secondary" onClick={() => setResolveModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" isLoading={resolving} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              Confirm Resolution
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

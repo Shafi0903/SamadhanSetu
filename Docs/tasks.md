@@ -49,14 +49,15 @@ This document divides the SamadhanSetu platform development into manageable phas
 ## Phase 4: Matchmaking & Collaboration (Week 4)
 **Goal:** Enable universities to claim verified problems and industry to offer support.
 
-* [ ] **Task 4.1: Public Challenge Board**
-  * Build a searchable, filterable grid/list view of all *Verified* problems.
-* [ ] **Task 4.2: Project Claiming (University)**
+* [x] **Task 4.1: Public Challenge Board**
+  * Build a searchable, filterable grid/list view of all *Verified* problems with claim status indicators.
+* [x] **Task 4.2: Project Claiming (University)**
   * Implement the workflow for a Faculty member to "Claim" a problem.
-  * Create the "Solution Proposal" submission portal for student teams.
-* [ ] **Task 4.3: Industry Support Portal**
-  * Build the UI for Industry partners to browse proposed solutions.
-  * Implement the "Pledge Support" feature (financial, mentorship, tech).
+  * Create the "Solution Proposal" submission portal for student teams (prototype stages, code repo, document attachments).
+* [x] **Task 4.3: Industry Support Portal**
+  * Build the UI for Industry partners to browse proposed solutions across universities.
+  * Implement the "Pledge Support" feature (CSR financial funding, technical mentorship, testing equipment, incubation).
+  * Add solution resolution trigger advancing problems to deployed & resolved status.
 
 ## Phase 5: Tracking & Notifications (Week 5)
 **Goal:** Ensure transparency and keep all stakeholders informed.
