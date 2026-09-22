@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Starting SamadhanSetu Database Seeding...");
+  console.log("🌱 Starting SamadhanSetu Database Seeding (Kolkata Region)...");
 
   // 1. Clean existing records (in dependency order)
   await prisma.notification.deleteMany({});
@@ -43,27 +43,27 @@ async function main() {
     },
   });
 
-  // Government Officials
+  // Government Officials (Kolkata Municipal Corporation)
   const govOfficer = await prisma.user.create({
     data: {
       fullName: "Officer Rajesh Patil",
-      email: "officer.patil@pmc.gov.in",
+      email: "officer.patil@kmc.gov.in",
       passwordHash: defaultPasswordHash,
       role: "GOVERNMENT",
-      organizationName: "Pune Municipal Corporation (PMC)",
-      designation: "Executive Engineer - Ward 4",
+      organizationName: "Kolkata Municipal Corporation (KMC)",
+      designation: "Executive Engineer - Borough V",
       isVerified: true,
     },
   });
 
-  // University Faculty & Innovation Teams
+  // University Faculty & Innovation Teams (Jadavpur University & IIEST Shibpur)
   const univFaculty = await prisma.user.create({
     data: {
       fullName: "Dr. Anita Kulkarni",
-      email: "anita.kulkarni@coep.ac.in",
+      email: "anita.kulkarni@jadavpuruniversity.in",
       passwordHash: defaultPasswordHash,
       role: "UNIVERSITY",
-      organizationName: "COEP Technological University",
+      organizationName: "Jadavpur University",
       designation: "Professor of Civil & Environmental Engineering",
       isVerified: true,
     },
@@ -72,10 +72,10 @@ async function main() {
   const iitbFaculty = await prisma.user.create({
     data: {
       fullName: "Prof. Vikram Rao",
-      email: "vikram.rao@iitb.ac.in",
+      email: "vikram.rao@iiests.ac.in",
       passwordHash: defaultPasswordHash,
       role: "UNIVERSITY",
-      organizationName: "Indian Institute of Technology (IIT) Bombay",
+      organizationName: "IIEST Shibpur",
       designation: "Head of Sensor & IoT Innovations Lab",
       isVerified: true,
     },
@@ -106,22 +106,22 @@ async function main() {
     },
   });
 
-  console.log("Creating Verified Civic Challenges & Lifecycles...");
+  console.log("Creating Verified Civic Challenges & Lifecycles in Kolkata...");
 
-  // Problem 1: Claimed & Solution Proposed with CSR Funding (The Active Showcase)
+  // Problem 1: Claimed & Solution Proposed with CSR Funding (Park Street Showcase)
   const problem1 = await prisma.problem.create({
     data: {
-      title: "Severe Monsoon Potholes & Road Subsidence on FC Road Junction",
+      title: "Severe Monsoon Potholes & Road Subsidence on Park Street Junction",
       description:
-        "Deep structural potholes have formed across a 300-meter stretch near Goodluck Cafe, causing multiple motorcycle skids and heavy traffic bottlenecks during monsoon rains. Heavy vehicles aggravate sub-base erosion.",
+        "Deep structural potholes have formed across a 300-meter stretch near Park Street and Camac Street crossing, causing multiple vehicular skids and heavy traffic bottlenecks during monsoon rains. Heavy commercial traffic aggravates sub-base erosion.",
       category: "ROADS_INFRASTRUCTURE",
       status: "SOLUTION_PROPOSED",
-      latitude: 18.5218,
-      longitude: 73.8415,
-      address: "Fergusson College Rd, Shivajinagar",
-      city: "Pune",
-      state: "Maharashtra",
-      pincode: "411004",
+      latitude: 22.5510,
+      longitude: 88.3524,
+      address: "Park Street & Camac Street Crossing, Ward 63",
+      city: "Kolkata",
+      state: "West Bengal",
+      pincode: "700016",
       mediaUrls: [
         "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=800&auto=format&fit=crop",
       ],
@@ -135,28 +135,28 @@ async function main() {
           {
             eventType: "REPORTED",
             title: "Problem Reported by Citizen",
-            description: "Geotagged road hazard grievance filed with photographic evidence.",
+            description: "Geotagged road hazard grievance filed with photographic evidence near Park Street.",
             actorId: citizen1.id,
             createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
           },
           {
             eventType: "VERIFIED",
-            title: "Verified by PMC Nodal Officer",
-            description: "On-ground road structural failure validated by Officer Rajesh Patil.",
+            title: "Verified by KMC Nodal Officer",
+            description: "On-ground road structural failure validated by Officer Rajesh Patil (KMC Borough V).",
             actorId: govOfficer.id,
             createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
           },
           {
             eventType: "CLAIMED",
-            title: "Claimed by COEP Technological University",
-            description: "Dr. Anita Kulkarni claimed this challenge for the Advanced Pavement Capstone team.",
+            title: "Claimed by Jadavpur University",
+            description: "Dr. Anita Kulkarni claimed this challenge for the Advanced Pavement & Infrastructure Capstone team.",
             actorId: univFaculty.id,
             createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
           },
           {
             eventType: "SOLUTION_PROPOSED",
             title: "Solution Prototype Proposed",
-            description: "COEP team submitted proposal for Quick-Cure Polymer Cold Mix with automated pothole depth sensors.",
+            description: "Jadavpur University team submitted proposal for Quick-Cure Polymer Cold Mix with automated pothole depth sensors.",
             actorId: univFaculty.id,
             createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
           },
@@ -172,51 +172,45 @@ async function main() {
     },
   });
 
-  // Attach Solution Proposal & Pledge to Problem 1
-  const solution1 = await prisma.solutionProposal.create({
+  // Attach Solution Proposal
+  await prisma.solutionProposal.create({
     data: {
       problemId: problem1.id,
       teamLeadId: univFaculty.id,
-      title: "Eco-Polymer Cold Mix Asphalt with Pre-Cast Modular Filling",
+      title: "Rapid-Cure Geopolymer Cold-Mix Asphalt Patch",
       description:
-        "A zero-heat, rapid-curing asphalt matrix utilizing recycled plastic aggregate and polymer bitumen binder. Sets in 30 minutes under active precipitation, eliminating post-monsoon rework.",
+        "Standard bitumen fails prematurely in high-moisture delta conditions like Kolkata. Our geopolymer cold mix cures rapidly in 45 minutes, withstands 15-ton axle loads, and utilizes industrial fly ash from local thermal units, reducing carbon footprint by 40%.",
       stage: "PROTOTYPE",
-      repoUrl: "https://github.com/samadhansetu-innovators/eco-polymer-pothole",
-      documentUrls: ["https://example.com/coep-asphalt-research.pdf"],
+      repoUrl: "https://github.com/samadhansetu-innovators/geopolymer-coldmix",
+      documentUrls: ["https://samadhansetu-docs.org/prototypes/geopolymer-pothole-v1.pdf"],
       pledges: {
         create: [
           {
             sponsorId: industryPartner1.id,
             pledgeType: "CSR_FUNDING",
             amount: 150000,
-            description: "Seed funding for manufacturing 2 metric tonnes of test polymer cold mix and pilot road deployment.",
-            status: "ACCEPTED",
-          },
-          {
-            sponsorId: industryPartner2.id,
-            pledgeType: "MENTORSHIP",
-            description: "Weekly materials testing mentorship from civil engineering specialists at Infosys Campus Infrastructure.",
-            status: "ACCEPTED",
+            description: "Grant approved under Urban Infrastructure Resilience Grant FY26. Includes testing laboratory materials.",
+            status: "FULFILLED",
           },
         ],
       },
     },
   });
 
-  // Problem 2: Fully RESOLVED & Field Deployed Showcase
+  // Problem 2: Fully RESOLVED & Field Deployed Showcase (Gariahat Crossing)
   const problem2 = await prisma.problem.create({
     data: {
-      title: "High-Volume Clean Water Pipeline Leakage at Kothrud Junction",
+      title: "High-Volume Clean Water Pipeline Leakage at Gariahat Crossing",
       description:
-        "Sub-surface drinking water distribution line suffered severe joint rupture, causing thousands of liters of treated water to pool on the street daily.",
+        "Sub-surface drinking water distribution line suffered severe joint rupture near Gariahat Pantaloons crossing, causing thousands of liters of treated potable water to pool on the street daily.",
       category: "WATER",
       status: "RESOLVED",
-      latitude: 18.5074,
-      longitude: 73.8077,
-      address: "Karve Road, near Paud Phata, Kothrud",
-      city: "Pune",
-      state: "Maharashtra",
-      pincode: "411038",
+      latitude: 22.5195,
+      longitude: 88.3653,
+      address: "Gariahat Road near Pantaloons Crossing, Ward 85",
+      city: "Kolkata",
+      state: "West Bengal",
+      pincode: "700019",
       mediaUrls: [
         "https://images.unsplash.com/photo-1584467735815-f778f274e296?w=800&auto=format&fit=crop",
       ],
@@ -230,21 +224,21 @@ async function main() {
           {
             eventType: "REPORTED",
             title: "Problem Reported by Citizen",
-            description: "Reported with geo-tag by citizen Priya Sharma.",
+            description: "Reported with geo-tag by citizen Priya Sharma at Gariahat.",
             actorId: citizen2.id,
             createdAt: new Date(Date.now() - 26 * 24 * 60 * 60 * 1000),
           },
           {
             eventType: "VERIFIED",
-            title: "Verified by Nodal Authority",
-            description: "Pipeline loss confirmed by PMC Water Works.",
+            title: "Verified by KMC Nodal Authority",
+            description: "Pipeline loss confirmed by KMC Water Supply Dept engineers.",
             actorId: govOfficer.id,
             createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000),
           },
           {
             eventType: "CLAIMED",
-            title: "Claimed by IIT Bombay",
-            description: "Adopted by IITB IoT Sensor Lab under Prof. Vikram Rao.",
+            title: "Claimed by IIEST Shibpur",
+            description: "Adopted by IIEST Shibpur IoT Sensor Lab under Prof. Vikram Rao.",
             actorId: iitbFaculty.id,
             createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
           },
@@ -289,20 +283,20 @@ async function main() {
     },
   });
 
-  // Problem 3: Verified Challenge Open for Claims on Challenge Board
+  // Problem 3: Verified Challenge Open for Claims on Challenge Board (Koley Market)
   await prisma.problem.create({
     data: {
-      title: "Garbage Overflow & Waste Segregation Breakdown at Market Yard Gate 3",
+      title: "Garbage Overflow & Waste Segregation Breakdown at Koley Market Gate 2",
       description:
-        "Daily vegetable and organic market waste accumulates into uncontrolled mounds, leading to stray animal feeding and health hazards. Requires smart organic compost conversion or solar incinerator prototype.",
+        "Daily vegetable and wholesale organic market waste accumulates into uncontrolled mounds near Sealdah, leading to stray animal feeding and health hazards. Requires smart organic compost conversion or solar incinerator prototype.",
       category: "WASTE_MANAGEMENT",
       status: "VERIFIED",
-      latitude: 18.4947,
-      longitude: 73.8682,
-      address: "Gultekdi Market Yard",
-      city: "Pune",
-      state: "Maharashtra",
-      pincode: "411037",
+      latitude: 22.5685,
+      longitude: 88.3712,
+      address: "Koley Market, Beliaghata Main Road, Ward 36",
+      city: "Kolkata",
+      state: "West Bengal",
+      pincode: "700014",
       mediaUrls: [
         "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&auto=format&fit=crop",
       ],
@@ -314,13 +308,13 @@ async function main() {
           {
             eventType: "REPORTED",
             title: "Reported by Citizen",
-            description: "Citizen logged market yard waste disposal crisis.",
+            description: "Citizen logged Koley Market waste disposal crisis.",
             actorId: citizen1.id,
             createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
           },
           {
             eventType: "VERIFIED",
-            title: "Verified by Nodal Authority",
+            title: "Verified by KMC Nodal Authority",
             description: "Sanitation inspectors verified site conditions. Published to University Challenge Board.",
             actorId: govOfficer.id,
             createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
@@ -330,20 +324,20 @@ async function main() {
     },
   });
 
-  // Problem 4: Pending Verification in Gov Triage Queue
+  // Problem 4: Pending Verification in Gov Triage Queue (Maa Flyover)
   await prisma.problem.create({
     data: {
-      title: "Flickering & Non-Operational Streetlights along Pune University Flyover",
+      title: "Flickering & Non-Operational Streetlights along Maa Flyover, EM Bypass",
       description:
-        "Over 8 LED streetlamp fixtures along the northbound flyover ramp have suffered power supply failures, reducing visibility at night and increasing accident risk.",
+        "Over 8 LED streetlamp fixtures along the northbound Maa flyover ramp have suffered power supply failures, reducing visibility at night and increasing accident risk.",
       category: "ELECTRICITY_ENERGY",
       status: "PENDING_VERIFICATION",
-      latitude: 18.5362,
-      longitude: 73.8298,
-      address: "Savitribai Phule Pune University Flyover, Ganeshkhind",
-      city: "Pune",
-      state: "Maharashtra",
-      pincode: "411007",
+      latitude: 22.5392,
+      longitude: 88.3970,
+      address: "Maa Flyover Connector near Science City, EM Bypass",
+      city: "Kolkata",
+      state: "West Bengal",
+      pincode: "700046",
       mediaUrls: [
         "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&auto=format&fit=crop",
       ],
@@ -369,13 +363,13 @@ async function main() {
     data: { problemId: problem2.id, userId: citizen1.id },
   });
 
-  console.log("✅ Database Seeding Completed Successfully!");
+  console.log("✅ Database Seeding Completed Successfully for Kolkata!");
   console.log("-----------------------------------------------");
   console.log("Demo Accounts (Password: Password@123):");
   console.log(" - Citizen OTP: 9876543210 (Demo OTP: 123456)");
-  console.log(" - Government: officer.patil@pmc.gov.in");
-  console.log(" - University: anita.kulkarni@coep.ac.in");
-  console.log(" - University: vikram.rao@iitb.ac.in");
+  console.log(" - Government: officer.patil@kmc.gov.in");
+  console.log(" - University: anita.kulkarni@jadavpuruniversity.in");
+  console.log(" - University: vikram.rao@iiests.ac.in");
   console.log(" - Industry CSR: csr.mehta@tatatrusts.org");
   console.log(" - Industry CSR: csr.nair@infosys.org");
   console.log("-----------------------------------------------");

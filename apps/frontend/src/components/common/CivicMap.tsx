@@ -28,7 +28,7 @@ export interface CivicMapProps {
 
 export function CivicMap({
   problems = [],
-  center = [18.5204, 73.8567], // Pune coordinates default
+  center = [22.5726, 88.3639], // Kolkata coordinates default
   zoom = 13,
   height = "420px",
   isPicker = false,

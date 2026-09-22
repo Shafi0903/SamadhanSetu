@@ -21,10 +21,9 @@
 ```
 ┌─────────────────────────┐  ┌─────────────────────────┐  ┌─────────────────────────┐  ┌─────────────────────────┐
 │   ₹ 3,50,000 INR        │  │       4 CHALLENGES      │  │      2 UNIVERSITIES     │  │       100% AUDIT        │
-│   CSR Capital Committed │  │    Verified Pilot Issues│  │   COEP & IIT Bombay IoT │  │  Transparent Lifecycles │
-│   🟢 100% Traceable     │  │    📍 Pune Urban Area   │  │   🔬 Student Lab Capston│  │  📋 Immutable Event Log│
+│   CSR Capital Committed │  │    Verified Pilot Issues│  │  Jadavpur & IIEST Shibpur│  │  Transparent Lifecycles │
+│   🟢 100% Traceable     │  │    📍 Kolkata Urban Area│  │   🔬 Student Lab Capston│  │  📋 Immutable Event Log│
 └─────────────────────────┘  └─────────────────────────┘  └─────────────────────────┘  └─────────────────────────┘
-```
 
 ---
 
@@ -83,18 +82,18 @@
 > [!NOTE]
 > Every transition generates an **immutable timeline event** visible on the public challenge board with exact timestamps, stakeholder names, and funding records.
 <!-- slide -->
-### Slide 4: Real Pilot Showcase — Pune Municipal Corporation (PMC)
+### Slide 4: Real Pilot Showcase — Kolkata Municipal Corporation (KMC)
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
-│ 📍 Pune Pilot Showcase: Pothole & Road Subsidence on FC Road Junction                           │
+│ 📍 Kolkata Pilot Showcase: Pothole & Road Subsidence on Park Street Junction                    │
 ├─────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ • Status: SOLUTION_PROPOSED (Stage: PROTOTYPE)                                                  │
-│ • Reporter: Ramesh Kumar (Citizen, Ward 4)                                                      │
-│ • Triage Officer: Officer Rajesh Patil (Executive Engineer, PMC)                                │
-│ • Solver Team: Dr. Anita Kulkarni & Civil Dept (COEP Technological University)                  │
+│ • Reporter: Ramesh Kumar (Citizen, Ward 63)                                                     │
+│ • Triage Officer: Officer Rajesh Patil (Executive Engineer, KMC Borough V)                     │
+│ • Solver Team: Dr. Anita Kulkarni & Civil Dept (Jadavpur University)                            │
 │ • Proposed Fix: Cold-mix rapid geopolymer overlay (45-min cure in monsoon)                      │
 │ • CSR Sponsor: Tata Trusts Urban Innovation Grant — ₹ 1,50,000 Committed                       │
-│ • Setu Timeline: 4 Milestones Logged & Publicly Verifiable                                      │
+│ • Setu Timeline: 5 Milestones Logged & Publicly Verifiable                                      │
 └─────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 ````
@@ -109,7 +108,7 @@ This sequence diagram illustrates how all four stakeholder personas interact thr
 sequenceDiagram
     autonumber
     actor C as 👤 Grassroots Citizen
-    actor G as 🏛️ Ward Officer (PMC)
+    actor G as 🏛️ Ward Officer (KMC)
     actor U as 🎓 University Innovator
     actor I as 💼 Industry CSR Director
     participant P as 🌉 SamadhanSetu Platform
@@ -128,7 +127,7 @@ sequenceDiagram
 
     Note over U,P: 3. Academic Solving Stage
     U->>P: Discover Challenge on Board & Click "Claim for University"
-    P->>DB: Status: UNDER_INVESTIGATION (Adopted by COEP)
+    P->>DB: Status: UNDER_INVESTIGATION (Adopted by Jadavpur Univ)
     U->>P: Submit Prototype Proposal (Repo, Stage & Required Budget)
     P->>DB: Status: SOLUTION_PROPOSED
 
@@ -152,18 +151,18 @@ sequenceDiagram
 │ 👤 CITIZEN MOBILE INTAKE                     │ 🏛️ GOVERNMENT TRIAGE CONSOLE                           │
 ├──────────────────────────────────────────────┼────────────────────────────────────────────────────────┤
 │ ┌──────────────────────────────────────────┐ │ ┌────────────────────────────────────────────────────┐ │
-│ │ 📍 Pin Location (Deccan Gymkhana)        │ │ │ 📋 Pending Verification Queue (12)                 │ │
-│ │ 📷 Camera Evidence: [Live Pothole.jpg]   │ │ │ • Pothole on FC Road       [High]  [Review ➔]     │ │
-│ │ 🏷️ Category: Roads & Infrastructure      │ │ │ • Pipeline Burst, Kothrud  [Urgent][Review ➔]     │ │
-│ │ 🔘 [ Submit Grievance (OTP Verified) ]   │ │ │ • Market Yard Waste Mounds [Med]   [Review ➔]     │ │
+│ │ 📍 Pin Location (Park Street, Ward 63)   │ │ │ 📋 Pending Verification Queue (12)                 │ │
+│ │ 📷 Camera Evidence: [Live Pothole.jpg]   │ │ │ • Pothole on Park Street   [High]  [Review ➔]     │ │
+│ │ 🏷️ Category: Roads & Infrastructure      │ │ │ • Water Leak at Gariahat   [Urgent][Review ➔]     │ │
+│ │ 🔘 [ Submit Grievance (OTP Verified) ]   │ │ │ • Koley Market Waste Mounds[Med]   [Review ➔]     │ │
 │ └──────────────────────────────────────────┘ │ └────────────────────────────────────────────────────┘ │
 ├──────────────────────────────────────────────┼────────────────────────────────────────────────────────┤
 │ 🎓 UNIVERSITY PROTOTYPING PORTAL             │ 💼 CORPORATE CSR SPONSORSHIP DESK                      │
 ├──────────────────────────────────────────────┼────────────────────────────────────────────────────────┤
 │ ┌──────────────────────────────────────────┐ │ ┌────────────────────────────────────────────────────┐ │
 │ │ 🔬 Active Capstone Proposals (3)         │ │ │ 💰 CSR Grant Commitment Portfolio                  │ │
-│ │ • Cold-Mix Geopolymer Asphalt Overlay    │ │ │ • Tata Trusts: ₹ 1,50,000 ➔ FC Road Solution       │ │
-│ │ • Acoustic Pipe Leak Sensor Network      │ │ │ • Infosys Foundation: ₹ 2,00,000 ➔ Waste Recycling │ │
+│ │ • Cold-Mix Geopolymer Asphalt Overlay    │ │ │ • Tata Trusts: ₹ 1,50,000 ➔ Park St Solution       │ │
+│ │ • Acoustic Pipe Leak Sensor Network      │ │ │ • Infosys Foundation: ₹ 2,00,000 ➔ Water Network   │ │
 │ │ 🔗 [ View GitHub Repo & CAD Blueprints ] │ │ │ 📑 [ Download 100% Tax Audit Trail Receipt ]       │ │
 │ └──────────────────────────────────────────┘ │ └────────────────────────────────────────────────────┘ │
 └───────────────────────────────────────────────────────────────────────────────────────────────────────┘
@@ -257,8 +256,8 @@ You can test every single stakeholder persona right now on the live web applicat
 | Persona | Login Method | Identifier | Credentials | Assigned Production Workspace |
 | :--- | :--- | :--- | :--- | :--- |
 | **👤 Grassroots Citizen** | Mobile OTP | `9876543210` | Demo OTP: `123456` | [`/dashboard/citizen`](https://frontend-tpit.vercel.app/dashboard/citizen) |
-| **🏛️ Municipal Officer** | Email & Password | `officer.patil@pmc.gov.in` | `Password@123` | [`/dashboard/government`](https://frontend-tpit.vercel.app/dashboard/government) |
-| **🎓 University Innovator** | Email & Password | `anita.kulkarni@coep.ac.in` | `Password@123` | [`/dashboard/university`](https://frontend-tpit.vercel.app/dashboard/university) |
+| **🏛️ Municipal Officer** | Email & Password | `officer.patil@kmc.gov.in` | `Password@123` | [`/dashboard/government`](https://frontend-tpit.vercel.app/dashboard/government) |
+| **🎓 University Innovator** | Email & Password | `anita.kulkarni@jadavpuruniversity.in` | `Password@123` | [`/dashboard/university`](https://frontend-tpit.vercel.app/dashboard/university) |
 | **💼 Industry CSR Director** | Email & Password | `csr.mehta@tatatrusts.org` | `Password@123` | [`/dashboard/industry`](https://frontend-tpit.vercel.app/dashboard/industry) |
 | **🌐 Public Challenge Board**| *No Login Needed* | Public Access | Free Browsing | [`/challenge`](https://frontend-tpit.vercel.app/challenge) |
 | **📈 Global Impact Analytics**| *No Login Needed* | Public Access | Free Browsing | [`/analytics`](https://frontend-tpit.vercel.app/analytics) |

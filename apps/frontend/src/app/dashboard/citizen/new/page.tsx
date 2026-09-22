@@ -34,12 +34,12 @@ export default function NewProblemPage() {
   const [description, setDescription] = React.useState("");
 
   // Geolocation
-  const [latitude, setLatitude] = React.useState<number>(18.5204); // Default to Pune coordinates
-  const [longitude, setLongitude] = React.useState<number>(73.8567);
+  const [latitude, setLatitude] = React.useState<number>(22.5726); // Default to Kolkata coordinates
+  const [longitude, setLongitude] = React.useState<number>(88.3639);
   const [address, setAddress] = React.useState("");
-  const [city, setCity] = React.useState("Pune");
-  const [state, setState] = React.useState("Maharashtra");
-  const [pincode, setPincode] = React.useState("411005");
+  const [city, setCity] = React.useState("Kolkata");
+  const [state, setState] = React.useState("West Bengal");
+  const [pincode, setPincode] = React.useState("700001");
   const [detectingLoc, setDetectingLoc] = React.useState(false);
 
   // Media & Camera Upload
@@ -285,21 +285,21 @@ export default function NewProblemPage() {
                     <Input
                       label="City"
                       required
-                      placeholder="Pune"
+                      placeholder="Kolkata"
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                     />
                     <Input
                       label="State"
                       required
-                      placeholder="Maharashtra"
+                      placeholder="West Bengal"
                       value={state}
                       onChange={(e) => setState(e.target.value)}
                     />
                     <Input
                       label="Pincode"
                       required
-                      placeholder="411004"
+                      placeholder="700001"
                       value={pincode}
                       onChange={(e) => setPincode(e.target.value)}
                     />

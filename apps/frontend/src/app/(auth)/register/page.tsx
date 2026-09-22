@@ -330,9 +330,9 @@ export default function RegisterPage() {
                   required
                   placeholder={
                     role === "GOVERNMENT"
-                      ? "e.g. Pune Municipal Corporation (PMC)"
+                      ? "e.g. Kolkata Municipal Corporation (KMC)"
                       : role === "UNIVERSITY"
-                      ? "e.g. Indian Institute of Technology Bombay"
+                      ? "e.g. Jadavpur University / IIEST Shibpur"
                       : "e.g. Tata Consultancy Services CSR"
                   }
                   value={organizationName}
