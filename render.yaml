@@ -2,7 +2,7 @@ services:
   - type: web
     name: samadhansetu-api
     runtime: docker
-    dockerfilePath: apps/backend/Dockerfile
+    dockerfilePath: Dockerfile
     dockerContext: .
     plan: free
     region: singapore
