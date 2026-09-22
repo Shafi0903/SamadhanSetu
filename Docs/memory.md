@@ -6,9 +6,14 @@
 
 ## 1. Current Project State & Active Context
 
-* **Current Phase:** Roles Verification, Containerization & Production Deployment Ready
-* **Active Task:** Full Docker Compose orchestration, container multi-stage Dockerfiles (`apps/backend/Dockerfile`, `apps/frontend/Dockerfile`), `.dockerignore`, `.env.example`, and 4-role verification runbook implemented.
-* **Immediate Next Step:** Production hosting deployment (Vercel + Railway/Render + Managed PostgreSQL) or custom domain setup.
+* **Current Phase:** Production Cloud Deployment Complete & Live (Vercel + Render + Supabase)
+* **Live URLs:**
+  - **Web Frontend (Vercel):** https://frontend-tpit.vercel.app
+  - **API Backend (Render):** https://samadhansetu-tpub.onrender.com
+  - **Database (Supabase PostgreSQL):** `aws-0-ap-south-1.pooler.supabase.com:5432/postgres`
+  - **GitHub Repository:** https://github.com/Shafi0903/SamadhanSetu
+* **Active Task:** Production deployment verified live, end-to-end multi-sided stakeholder platform operational.
+* **Immediate Next Step:** Production monitoring, user acceptance testing, or custom domain linkage.
 
 ## 2. Important Decisions (Architecture & Design)
 
