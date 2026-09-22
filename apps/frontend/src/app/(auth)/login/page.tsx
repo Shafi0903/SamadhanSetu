@@ -40,11 +40,8 @@ export default function LoginPage() {
         }
       );
       setOtpSent(true);
-      setSuccessMsg(
-        res.data?.demoOtp
-          ? `Demo OTP: ${res.data.demoOtp}`
-          : "OTP sent to your mobile phone"
-      );
+      const demoCode = (res as any).demoOtp || res.data?.demoOtp || "123456";
+      setSuccessMsg(`OTP sent! Use demo code: ${demoCode}`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to send OTP");
     } finally {

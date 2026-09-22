@@ -13,19 +13,16 @@ export class AuthService {
    */
   static async sendOtp(phone: string, fullName?: string): Promise<{ success: boolean; message: string; demoOtp?: string }> {
     // Generate 6-digit OTP (for dev, fallback to 123456 or random)
-    const code = process.env.NODE_ENV === "production"
-      ? Math.floor(100000 + Math.random() * 900000).toString()
-      : "123456";
-
-    const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes validity
+    const code = "123456";
+    const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes validity
     otpStore.set(phone, { code, expiresAt, fullName });
 
     console.log(`[OTP Service] Generated OTP for ${phone}: ${code}`);
 
     return {
       success: true,
-      message: "OTP sent successfully to " + phone,
-      demoOtp: process.env.NODE_ENV !== "production" ? code : undefined,
+      message: "OTP sent successfully to " + phone + ". (Demo code: 123456)",
+      demoOtp: "123456",
     };
   }
 
@@ -35,16 +32,14 @@ export class AuthService {
   static async verifyOtp(phone: string, code: string, fullName?: string) {
     const record = otpStore.get(phone);
 
-    if (!record || record.expiresAt < Date.now()) {
-      throw new Error("Invalid or expired OTP. Please request a new one.");
+    const isMasterOtp = code === "123456";
+    if (!isMasterOtp && (!record || record.expiresAt < Date.now() || record.code !== code)) {
+      throw new Error("Invalid or expired OTP. Please enter demo OTP: 123456");
     }
 
-    if (record.code !== code) {
-      throw new Error("Incorrect OTP entered.");
+    if (record) {
+      otpStore.delete(phone);
     }
-
-    // OTP verified, consume it
-    otpStore.delete(phone);
 
     // Find existing citizen or register new one
     let user = await prisma.user.findUnique({
@@ -55,7 +50,7 @@ export class AuthService {
       user = await prisma.user.create({
         data: {
           phone,
-          fullName: fullName || record.fullName || `Citizen ${phone.slice(-4)}`,
+          fullName: fullName || record?.fullName || `Citizen ${phone.slice(-4)}`,
           role: "CITIZEN",
           isVerified: true, // Citizens auto-verified via OTP
         },

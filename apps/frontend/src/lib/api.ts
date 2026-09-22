@@ -1,5 +1,12 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+function getApiBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_API_URL && !process.env.NEXT_PUBLIC_API_URL.includes("localhost")) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  if (typeof window !== "undefined" && !window.location.hostname.includes("localhost")) {
+    return "https://samadhansetu-tpub.onrender.com";
+  }
+  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+}
 
 interface RequestOptions extends RequestInit {
   token?: string | null;
@@ -21,7 +28,8 @@ export async function apiRequest<T = unknown>(
     }
   }
 
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}${endpoint}`, {
     headers: {
       "Content-Type": "application/json",
       ...authHeader,
