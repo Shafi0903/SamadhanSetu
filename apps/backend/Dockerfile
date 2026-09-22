@@ -10,7 +10,7 @@ COPY package.json package-lock.json ./
 COPY packages/types/package.json ./packages/types/
 COPY apps/backend/package.json ./apps/backend/
 
-# Install monorepo dependencies
+# Install monorepo dependencies (hoisted to /app/node_modules)
 RUN npm ci
 
 # Copy types and backend source
@@ -32,10 +32,9 @@ RUN apt-get update -y && apt-get install -y openssl ca-certificates && rm -rf /v
 ENV NODE_ENV=production
 ENV PORT=5000
 
-# Copy workspace dependencies and built artifacts
+# Copy hoisted monorepo node_modules and built packages
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/packages /app/packages
-COPY --from=builder /app/apps/backend/node_modules ./node_modules
 COPY --from=builder /app/apps/backend/dist ./dist
 COPY --from=builder /app/apps/backend/prisma ./prisma
 COPY --from=builder /app/apps/backend/package.json ./package.json
