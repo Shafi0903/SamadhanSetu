@@ -12,6 +12,26 @@ export function createApp(): Express {
   app.use(cors());
   app.use(express.json());
 
+  // Root API Landing Endpoint
+  app.get("/", (req: Request, res: Response) => {
+    res.status(200).json({
+      success: true,
+      service: "SamadhanSetu API Server",
+      version: "1.0.0",
+      status: "online",
+      message: "SamadhanSetu API is running. The web user interface is hosted on http://localhost:3000",
+      frontendUrl: process.env.CLIENT_URL || "http://localhost:3000",
+      endpoints: {
+        health: "/health",
+        analytics: "/api/analytics/global",
+        challengeBoard: "/api/problems",
+        auth: "/api/auth",
+        solutions: "/api/solutions",
+        notifications: "/api/notifications",
+      },
+    });
+  });
+
   // Health Check
   app.get("/health", (req: Request, res: Response) => {
     res.status(200).json({ status: "ok", service: "SamadhanSetu API" });
@@ -23,6 +43,15 @@ export function createApp(): Express {
   app.use("/api/solutions", solutionRoutes);
   app.use("/api/notifications", notificationRoutes);
   app.use("/api/analytics", analyticsRoutes);
+
+  // 404 Catch-All Handler for undefined routes
+  app.use((req: Request, res: Response) => {
+    res.status(404).json({
+      success: false,
+      error: "Not Found",
+      message: `Cannot ${req.method} ${req.originalUrl}. For the web app UI, visit http://localhost:3000`,
+    });
+  });
 
   // Centralized Error Handling Middleware (Rules.md requirement)
   app.use(
