@@ -21,6 +21,8 @@ export const metadata: Metadata = {
     "A digital civic-tech platform bridging grassroots societal challenges with university talent and industry partners for sustainable, impact-driven solutions.",
 };
 
+import { ApiPrewarmer } from "@/components/common/ApiPrewarmer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${notoSans.variable} h-full`}>
       <body className="min-h-full flex flex-col font-sans bg-[#F9FAFB] text-[#111827]">
+        <ApiPrewarmer />
         {children}
       </body>
     </html>
