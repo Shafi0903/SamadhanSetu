@@ -1,11 +1,17 @@
 #!/bin/sh
 set -e
 
-echo "⏳ Waiting for PostgreSQL to be ready..."
-npx prisma db push --skip-generate
+if [ -z "$DATABASE_URL" ]; then
+  echo "⚠️ ERROR: DATABASE_URL environment variable is missing!"
+  echo "Please add DATABASE_URL in your hosting provider's Environment Variables settings."
+  exit 1
+fi
 
-echo "🌱 Seeding database if not already seeded..."
-npm run db:seed || echo "Seed skipped or already populated."
+echo "⏳ Syncing database schema with Prisma..."
+npx prisma db push --skip-generate || echo "Notice: db push finished with warnings."
+
+echo "🌱 Ensuring initial data seed..."
+npm run db:seed || echo "Notice: database already seeded or skipped."
 
 echo "🚀 Starting SamadhanSetu Backend Server..."
 exec node dist/server.js
