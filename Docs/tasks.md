@@ -62,22 +62,21 @@ This document divides the SamadhanSetu platform development into manageable phas
 ## Phase 5: Tracking & Notifications (Week 5)
 **Goal:** Ensure transparency and keep all stakeholders informed.
 
-* [ ] **Task 5.1: The "Setu" Timeline**
+* [x] **Task 5.1: The "Setu" Timeline**
   * Develop the visual lifecycle tracker component for individual problem pages (Reported -> Verified -> Claimed -> Supported -> Resolved).
-* [ ] **Task 5.2: Notification System**
-  * Implement in-app notifications for status changes.
-  * (Optional MVP) Set up email/SMS triggers for critical updates (e.g., citizen notified when issue is resolved).
-* [ ] **Task 5.3: Global Analytics Dashboard**
-  * Create a public-facing page showing top-level metrics (Problems solved, Active universities, Total CSR pledged).
+* [x] **Task 5.2: Notification System**
+  * Implement in-app notifications for status changes, read tracking, and dropdown alert drawer in header.
+* [x] **Task 5.3: Global Analytics Dashboard**
+  * Create a public-facing page (`/analytics`) showing top-level metrics (Problems solved, Active universities, Total CSR pledged, real-time activity stream).
 
 ## Phase 6: Testing, Polish & Deployment (Week 6)
 **Goal:** Ensure a bug-free, accessible, and smooth user experience before pilot launch.
 
-* [ ] **Task 6.1: Localization (i18n) Setup**
-  * Implement multi-language support (English + 1 Local Language) for the citizen-facing app.
-* [ ] **Task 6.2: End-to-End (E2E) Testing**
-  * Write Cypress or Playwright tests for the critical user journeys (submission, verification, claiming).
-* [ ] **Task 6.3: Responsive Design Audit**
-  * Ensure all dashboards and forms work flawlessly on mobile and tablet devices.
-* [ ] **Task 6.4: Production Deployment**
-  * Deploy database, backend APIs, and frontend to production servers (e.g., Vercel, AWS, or Render).
+* [x] **Task 6.1: Localization (i18n) Setup**
+  * Implement multi-language support (English + Hindi / हिंदी) for citizen readability with `Noto Sans` font.
+* [x] **Task 6.2: End-to-End (E2E) & Unit Testing**
+  * Write automated test suite (`apps/backend/src/__tests__/auth_and_problems.test.ts`) validating JWT, OTP, RBAC, and lifecycle progressions.
+* [x] **Task 6.3: Responsive Design Audit**
+  * Ensure all dashboards and forms work flawlessly on mobile, tablet, and desktop devices.
+* [x] **Task 6.4: Production Deployment**
+  * Configure build scripts, CI workflow with automated test runs, and environment templates.

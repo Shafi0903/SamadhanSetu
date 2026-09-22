@@ -79,10 +79,25 @@ model User {
   comments           Comment[]
   upvotes            ProblemUpvote[]
   timelineEvents     TimelineEvent[]    @relation("ActorTimelineEvents")
+  notifications      Notification[]
 
   @@index([role])
   @@index([email])
   @@index([phone])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String   @db.Text
+  linkUrl   String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([isRead])
 }
 
 model Problem {
