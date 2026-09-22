@@ -20,15 +20,16 @@ This document divides the SamadhanSetu platform development into manageable phas
 ## Phase 2: Authentication & User Management (Week 2)
 **Goal:** Securely onboard the four primary user personas.
 
-* [ ] **Task 2.1: Auth Service Setup**
-  * Implement NextAuth or an alternative (e.g., Supabase/Clerk) for session management.
-* [ ] **Task 2.2: Citizen Authentication**
-  * Build OTP-based mobile/email login flow for basic users.
-* [ ] **Task 2.3: Institutional Authentication**
+* [x] **Task 2.1: Auth Service Setup**
+  * Implement JWT signing and verification, bcrypt password hashing, and Zod input validation schemas.
+* [x] **Task 2.2: Citizen Authentication**
+  * Build OTP-based mobile login flow for citizens (send OTP, verify OTP, auto-registration).
+* [x] **Task 2.3: Institutional Authentication**
   * Build standard email/password registration for Government, University, and Industry roles.
   * Implement an admin approval workflow for institutional accounts.
-* [ ] **Task 2.4: Role-Based Access Control (RBAC)**
-  * Create middleware to protect routes based on user roles.
+* [x] **Task 2.4: Role-Based Access Control (RBAC)**
+  * Create middlewares to authenticate JWT tokens and restrict access by UserRole (`CITIZEN`, `GOVERNMENT`, `UNIVERSITY`, `INDUSTRY`).
+  * Add dedicated role-based dashboards (`/dashboard/citizen`, `/dashboard/government`, `/dashboard/university`, `/dashboard/industry`).
 
 ## Phase 3: Core Problem Lifecycle (Week 3)
 **Goal:** Allow citizens to submit problems and government officials to verify them.

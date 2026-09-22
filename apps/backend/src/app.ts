@@ -1,5 +1,6 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
+import authRoutes from "./routes/auth.routes";
 
 export function createApp(): Express {
   const app = express();
@@ -7,9 +8,13 @@ export function createApp(): Express {
   app.use(cors());
   app.use(express.json());
 
+  // Health Check
   app.get("/health", (req: Request, res: Response) => {
     res.status(200).json({ status: "ok", service: "SamadhanSetu API" });
   });
+
+  // API Routes
+  app.use("/api/auth", authRoutes);
 
   // Centralized Error Handling Middleware (Rules.md requirement)
   app.use(
