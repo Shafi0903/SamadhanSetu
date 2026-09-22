@@ -1,0 +1,232 @@
+// SamadhanSetu Prisma Database Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CITIZEN
+  GOVERNMENT
+  UNIVERSITY
+  INDUSTRY
+}
+
+enum ProblemStatus {
+  PENDING_VERIFICATION
+  VERIFIED
+  UNDER_INVESTIGATION
+  SOLUTION_PROPOSED
+  RESOLVED
+  REJECTED
+}
+
+enum ProblemCategory {
+  WATER
+  ROADS_INFRASTRUCTURE
+  WASTE_MANAGEMENT
+  ELECTRICITY_ENERGY
+  HEALTH_SANITATION
+  ENVIRONMENT
+  EDUCATION
+  OTHER
+}
+
+enum SolutionStage {
+  PROPOSED
+  PROTOTYPE
+  TESTING
+  DEPLOYED
+}
+
+enum PledgeType {
+  MENTORSHIP
+  EQUIPMENT
+  CSR_FUNDING
+  INCUBATION
+}
+
+enum PledgeStatus {
+  PENDING
+  ACCEPTED
+  FULFILLED
+  DECLINED
+}
+
+model User {
+  id               String       @id @default(uuid())
+  email            String?      @unique
+  phone            String?      @unique
+  passwordHash     String?
+  fullName         String
+  role             UserRole     @default(CITIZEN)
+  organizationName String?
+  designation      String?
+  isVerified       Boolean      @default(false) // Required for institutional accounts (Gov/Univ/Industry)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  // Relationships
+  reportedProblems   Problem[]          @relation("ProblemReporter")
+  verifiedProblems   Problem[]          @relation("ProblemVerifier")
+  claimedProblems    Problem[]          @relation("ProblemClaimer")
+  solutionProposals  SolutionProposal[] @relation("TeamLeadSolutions")
+  supportPledges     SupportPledge[]    @relation("IndustryPledges")
+  comments           Comment[]
+  upvotes            ProblemUpvote[]
+  timelineEvents     TimelineEvent[]    @relation("ActorTimelineEvents")
+
+  @@index([role])
+  @@index([email])
+  @@index([phone])
+}
+
+model Problem {
+  id          String          @id @default(uuid())
+  title       String
+  description String          @db.Text
+  category    ProblemCategory
+  status      ProblemStatus   @default(PENDING_VERIFICATION)
+  
+  // Geolocation
+  latitude    Float
+  longitude   Float
+  address     String?
+  city        String?
+  state       String?
+  pincode     String?
+
+  // Media attachments
+  mediaUrls   String[]        @default([])
+
+  // Citizen reporter
+  reporterId  String
+  reporter    User            @relation("ProblemReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+
+  // Government verification
+  verifiedById String?
+  verifiedBy   User?          @relation("ProblemVerifier", fields: [verifiedById], references: [id])
+  verifiedAt   DateTime?
+  rejectionReason String?     @db.Text
+
+  // University claiming
+  claimedById  String?
+  claimedBy    User?          @relation("ProblemClaimer", fields: [claimedById], references: [id])
+  claimedAt    DateTime?
+
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  // Relationships
+  solutions       SolutionProposal[]
+  comments        Comment[]
+  upvotes         ProblemUpvote[]
+  timelineEvents  TimelineEvent[]
+
+  @@index([status])
+  @@index([category])
+  @@index([city, state])
+  @@index([reporterId])
+}
+
+model SolutionProposal {
+  id           String        @id @default(uuid())
+  title        String
+  description  String        @db.Text
+  stage        SolutionStage @default(PROPOSED)
+  repoUrl      String?
+  documentUrls String[]      @default([])
+
+  problemId    String
+  problem      Problem       @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  teamLeadId   String
+  teamLead     User          @relation("TeamLeadSolutions", fields: [teamLeadId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relationships
+  pledges      SupportPledge[]
+  comments     Comment[]
+
+  @@index([problemId])
+  @@index([teamLeadId])
+}
+
+model SupportPledge {
+  id          String        @id @default(uuid())
+  pledgeType  PledgeType
+  description String        @db.Text
+  amount      Float?
+  status      PledgeStatus  @default(PENDING)
+
+  solutionId  String
+  solution    SolutionProposal @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+
+  sponsorId   String
+  sponsor     User             @relation("IndustryPledges", fields: [sponsorId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([solutionId])
+  @@index([sponsorId])
+}
+
+model Comment {
+  id          String    @id @default(uuid())
+  content     String    @db.Text
+
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  problemId   String?
+  problem     Problem?  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  solutionId  String?
+  solution    SolutionProposal? @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([problemId])
+  @@index([solutionId])
+  @@index([authorId])
+}
+
+model ProblemUpvote {
+  id        String   @id @default(uuid())
+  problemId String
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([problemId, userId])
+  @@index([problemId])
+  @@index([userId])
+}
+
+model TimelineEvent {
+  id          String    @id @default(uuid())
+  eventType   String    // e.g., "REPORTED", "VERIFIED", "CLAIMED", "SUPPORT_PLEDGED", "RESOLVED"
+  title       String
+  description String    @db.Text
+
+  problemId   String
+  problem     Problem   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  actorId     String?
+  actor       User?     @relation("ActorTimelineEvents", fields: [actorId], references: [id])
+
+  createdAt   DateTime  @default(now())
+
+  @@index([problemId])
+}

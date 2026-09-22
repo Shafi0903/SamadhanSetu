@@ -11,20 +11,21 @@
     "prisma:migrate": "prisma migrate dev"
   },
   "dependencies": {
-    "express": "^4.21.2",
+    "@prisma/client": "^6.19.3",
+    "@samadhansetu/types": "*",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "zod": "^3.24.2",
+    "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "@samadhansetu/types": "*"
+    "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0",
     "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.10",
+    "prisma": "^6.19.3",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.2",
-    "prisma": "^6.4.1"
+    "typescript": "^5.8.2"
   }
 }

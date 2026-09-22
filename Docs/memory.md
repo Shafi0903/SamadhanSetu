@@ -7,13 +7,14 @@
 ## 1. Current Project State & Active Context
 
 * **Current Phase:** Phase 1 (Project Setup & Architecture)
-* **Active Task:** Completed Task 1.1 (Monorepo and Project Setup). Ready for Task 1.2 (Database Setup & Prisma Schema Design) and Task 1.3 (Base UI Component Library Expansion).
-* **Immediate Next Step:** Define initial Prisma schema for `User`, `Role`, `Problem`, `Solution`, and `Comment` in `apps/backend/src/prisma/schema.prisma`.
+* **Active Task:** Completed Task 1.2 (Database Setup & Prisma Schema Design). Ready for Task 1.3 (Base UI Component Library Expansion: Modal, Form Fields, Tabs) and Task 1.4 (CI/CD Pipeline).
+* **Immediate Next Step:** Complete remaining base UI components (Modal, Dropdown, Tabs) in `apps/frontend/src/components/ui/` for Task 1.3, then proceed to Phase 2 (Authentication & RBAC).
 
 ## 2. Important Decisions (Architecture & Design)
 
 *Log all major technical, structural, or design decisions here along with the rationale.*
 
+* **[2026-09-22] Prisma Database Schema:** Defined comprehensive Prisma schema (`apps/backend/prisma/schema.prisma`) modeling `User` (multi-persona with role-based attributes and verification flags), `Problem` (GPS geolocation coordinates, categories, status lifecycle, verification/claiming relations), `SolutionProposal` (student team prototype tracking), `SupportPledge` (industry CSR, mentorship, micro-grants), `Comment` (cross-entity discussion thread), `ProblemUpvote` (citizen validation), and `TimelineEvent` (audit log powering the transparent "Setu" lifecycle tracker).
 * **[2026-09-22] Monorepo Structure:** Adopted NPM workspaces monorepo structure containing `apps/frontend` (Next.js 16, React 19, Tailwind CSS), `apps/backend` (Node.js/Express, TypeScript), and `packages/types` (shared domain models & TypeScript definitions).
 * **[2026-09-22] Design System Tokens:** Applied the design tokens defined in `design.md` directly into `apps/frontend/tailwind.config.ts` and `apps/frontend/src/app/globals.css`, including semantic status colors (submitted: blue-500, pending: amber-500, urgent: red-500, resolved: emerald-500) and brand colors (primary: indigo-600, secondary: emerald-500).
 * **[2026-09-22] Core Shared Types:** Initialized `@samadhansetu/types` to unify data contracts (`UserRole`, `ProblemStatus`, `ProblemCategory`, `Problem`, `SolutionProposal`, `SupportPledge`, `ApiResponse`) between frontend and backend.
@@ -24,13 +25,13 @@
 
 *Log issues that are currently present, frequently recurring, or specific workarounds the AI needs to remember when writing code.*
 
-* **Empty State (Example):** No bugs logged yet.
-* *(Template: [Bug Description] -> [Current Workaround / Fix Status])*
+* **Prisma & @prisma/client Version Alignment:** Ensure `@prisma/client` and `prisma` CLI share identical major and minor version numbers (e.g., 6.19.3) in the monorepo root and workspace to prevent missing query engine runtime module errors.
 
 ## 4. Completed Milestones & Changelog
 
 *Briefly summarize completed tasks so the AI knows what already exists.*
 
+* **[2026-09-22] Task 1.2 Complete:** Designed and compiled complete Prisma schema in `apps/backend/prisma/schema.prisma`. Generated Prisma client v6.19.3. Created shared database singleton in `apps/backend/src/lib/prisma.ts`.
 * **[2026-09-22] Task 1.1 Complete:** Initialized Git repository, configured root NPM workspaces monorepo, scaffolded `apps/frontend` (Next.js App Router, Tailwind CSS, TypeScript), `apps/backend` (Express TypeScript), and `packages/types` (shared types). Created foundational UI components (`Button`, `Card`, `Badge`, `Input`) adhering to `design.md`. Both frontend and backend builds verified with exit code 0.
 * **[YYYY-MM-DD] Documentation:** Created initial PRD (`PRD.md`), AI Rules (`rules.md`), Design System (`design.md`), Task Breakdown (`tasks.md`), and Architecture blueprint (`architecture.md`).
 
