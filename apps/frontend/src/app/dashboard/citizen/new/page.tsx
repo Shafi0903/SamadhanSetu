@@ -42,9 +42,55 @@ export default function NewProblemPage() {
   const [pincode, setPincode] = React.useState("411005");
   const [detectingLoc, setDetectingLoc] = React.useState(false);
 
-  // Media
+  // Media & Camera Upload
   const [mediaUrlInput, setMediaUrlInput] = React.useState("");
   const [mediaUrls, setMediaUrls] = React.useState<string[]>([]);
+  const [compressing, setCompressing] = React.useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setCompressing(true);
+    const file = files[0];
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.75);
+        setMediaUrls((prev) => [...prev, dataUrl]);
+        setCompressing(false);
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const [submitting, setSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -281,13 +327,42 @@ export default function NewProblemPage() {
               {/* Step 3: Photos / Media Evidence & Confirmation */}
               {step === 3 && (
                 <div className="space-y-4">
+                  {/* Camera / Photo Upload Box */}
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-5 text-center hover:border-indigo-400 transition bg-white">
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileUpload}
+                      accept="image/*"
+                      className="hidden"
+                      id="camera-upload-input"
+                    />
+                    <label
+                      htmlFor="camera-upload-input"
+                      className="cursor-pointer flex flex-col items-center justify-center gap-2"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-2xs">
+                        <PhotoIcon className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <span className="text-sm font-semibold text-indigo-600 hover:text-indigo-700">
+                          📸 Snap Photo with Camera or Upload File
+                        </span>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {compressing ? "Optimizing image for fast upload..." : "Click to select or capture live photo from smartphone"}
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+
+                  {/* Or paste web URL */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                      Photos or Evidence Links (Optional)
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      Or paste an existing image URL:
                     </label>
                     <div className="flex gap-2">
                       <Input
-                        placeholder="Paste image or photo URL (e.g. https://...)"
+                        placeholder="https://images.unsplash.com/..."
                         value={mediaUrlInput}
                         onChange={(e) => setMediaUrlInput(e.target.value)}
                       />
@@ -297,29 +372,31 @@ export default function NewProblemPage() {
                         onClick={addMediaUrl}
                         disabled={!mediaUrlInput}
                       >
-                        Add
+                        Add URL
                       </Button>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      A default civic illustration will be used if no photo URL is provided.
-                    </p>
                   </div>
 
+                  {/* Attached Media Thumbnails Gallery */}
                   {mediaUrls.length > 0 && (
                     <div className="space-y-2">
-                      <p className="text-xs font-semibold text-gray-600">Attached Media:</p>
-                      <div className="flex flex-wrap gap-2">
+                      <p className="text-xs font-semibold text-gray-700">Attached Evidence ({mediaUrls.length}):</p>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {mediaUrls.map((url, i) => (
                           <div
                             key={i}
-                            className="text-xs bg-gray-100 text-gray-800 rounded-md px-2.5 py-1 flex items-center gap-1.5"
+                            className="relative group rounded-lg overflow-hidden border border-gray-200 bg-gray-100 aspect-video flex items-center justify-center"
                           >
-                            <PhotoIcon className="w-4 h-4 text-gray-500" />
-                            <span className="max-w-[200px] truncate">{url}</span>
+                            <img
+                              src={url}
+                              alt={`Evidence ${i + 1}`}
+                              className="w-full h-full object-cover"
+                            />
                             <button
                               type="button"
                               onClick={() => removeMedia(i)}
-                              className="text-gray-400 hover:text-red-500 ml-1 font-bold"
+                              className="absolute top-1.5 right-1.5 bg-black/60 hover:bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs transition cursor-pointer"
+                              title="Delete photo"
                             >
                               ×
                             </button>
