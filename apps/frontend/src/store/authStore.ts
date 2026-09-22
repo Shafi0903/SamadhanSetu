@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { UserRole } from "@samadhansetu/types";
+export type UserRole = "CITIZEN" | "GOVERNMENT" | "UNIVERSITY" | "INDUSTRY";
 
 export interface AuthUser {
   id: string;
